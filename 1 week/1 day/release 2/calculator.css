@@ -1,0 +1,129 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.calculator-container {
+    width: 100%;
+    max-width: 400px;
+}
+
+.calculator {
+    background: #1a1a1a;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.display {
+    margin-bottom: 20px;
+}
+
+#display {
+    width: 100%;
+    height: 80px;
+    background: #2d2d2d;
+    border: none;
+    border-radius: 10px;
+    color: #ffffff;
+    font-size: 36px;
+    text-align: right;
+    padding: 0 20px;
+    font-weight: 300;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.btn {
+    height: 70px;
+    border: none;
+    border-radius: 10px;
+    font-size: 24px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn-number {
+    background: #3a3a3a;
+    color: #ffffff;
+}
+
+.btn-number:hover {
+    background: #4a4a4a;
+}
+
+.btn-operator {
+    background: #ff9500;
+    color: #ffffff;
+}
+
+.btn-operator:hover {
+    background: #ffaa33;
+}
+
+.btn-clear {
+    background: #a6a6a6;
+    color: #000000;
+}
+
+.btn-clear:hover {
+    background: #b6b6b6;
+}
+
+.btn-equals {
+    background: #ff9500;
+    color: #ffffff;
+    grid-column: span 1;
+}
+
+.btn-equals:hover {
+    background: #ffaa33;
+}
+
+.btn-zero {
+    grid-column: span 1;
+}
+
+@media (max-width: 480px) {
+    .calculator {
+        padding: 15px;
+    }
+    
+    #display {
+        height: 60px;
+        font-size: 28px;
+    }
+    
+    .btn {
+        height: 60px;
+        font-size: 20px;
+    }
+}
