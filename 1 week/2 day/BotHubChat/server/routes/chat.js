@@ -62,6 +62,23 @@ router.post('/chat', validateChatRequest, async (req, res, next) => {
 });
 
 /**
+ * OPTIONS /api/chat/stream
+ * Обработка preflight запросов для стриминга
+ */
+router.options('/chat/stream', (req, res) => {
+  const origin = req.headers.origin;
+  if (origin && (origin.includes('localhost') || origin.includes('127.0.0.1'))) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.sendStatus(200);
+});
+
+/**
  * POST /api/chat/stream
  * Отправка сообщения и получение стримингового ответа от AI
  * 
@@ -84,6 +101,15 @@ router.post('/chat/stream', validateChatRequest, async (req, res, next) => {
       presencePenalty,
     } = req.body;
 
+    // Устанавливаем CORS заголовки для стриминга
+    const origin = req.headers.origin;
+    if (origin && (origin.includes('localhost') || origin.includes('127.0.0.1'))) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+    } else {
+      res.setHeader('Access-Control-Allow-Origin', '*');
+    }
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    
     // Устанавливаем заголовки для Server-Sent Events (SSE)
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
@@ -116,6 +142,14 @@ router.post('/chat/stream', validateChatRequest, async (req, res, next) => {
     res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
     res.end();
   } catch (error) {
+    // Устанавливаем CORS заголовки перед отправкой ошибки
+    const origin = req.headers.origin;
+    if (origin && (origin.includes('localhost') || origin.includes('127.0.0.1'))) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+    } else {
+      res.setHeader('Access-Control-Allow-Origin', '*');
+    }
+    
     // Отправляем ошибку через SSE
     res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
     res.end();
