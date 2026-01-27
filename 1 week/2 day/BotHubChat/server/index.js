@@ -5,10 +5,16 @@
 
 import dotenv from 'dotenv';
 import express from 'express';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import fs from 'fs';
 import chatRoutes from './routes/chat.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -51,28 +57,45 @@ if (!process.env.OPENAI_API_KEY) {
   console.error('Создайте файл .env и добавьте OPENAI_API_KEY=your_key_here');
 }
 
-// Роуты
+// Роуты API
 app.use('/api', chatRoutes);
 
-// Корневой роут
-app.get('/', (req, res) => {
-  res.json({
-    message: 'OpenAI API Integration Server',
-    endpoints: {
-      'POST /api/chat': 'Отправка сообщения и получение ответа',
-      'POST /api/chat/stream': 'Стриминг ответа',
-      'POST /api/chat/completion': 'Расширенный метод с несколькими сообщениями',
-    },
-    example: {
-      url: '/api/chat',
-      method: 'POST',
-      body: {
-        message: 'Привет! Расскажи о Node.js',
-        systemPrompt: 'Ты опытный разработчик',
-      },
-    },
+// Раздача статических файлов клиента (для production)
+const publicPath = join(__dirname, 'public');
+const pathExists = fs.existsSync(publicPath);
+
+if (pathExists) {
+  app.use(express.static(publicPath));
+  
+  // SPA routing - все не-API запросы на index.html
+  app.get('*', (req, res, next) => {
+    // Пропускаем API запросы
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+    res.sendFile(join(publicPath, 'index.html'));
   });
-});
+} else {
+  // Если статики нет (development), показываем API документацию
+  app.get('/', (req, res) => {
+    res.json({
+      message: 'OpenAI API Integration Server',
+      endpoints: {
+        'POST /api/chat': 'Отправка сообщения и получение ответа',
+        'POST /api/chat/stream': 'Стриминг ответа',
+        'POST /api/chat/completion': 'Расширенный метод с несколькими сообщениями',
+      },
+      example: {
+        url: '/api/chat',
+        method: 'POST',
+        body: {
+          message: 'Привет! Расскажи о Node.js',
+          systemPrompt: 'Ты опытный разработчик',
+        },
+      },
+    });
+  });
+}
 
 // Обработка 404
 app.use((req, res) => {
