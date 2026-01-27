@@ -21,7 +21,7 @@ export const SettingsPanel = ({
   const handleChange = (key: keyof ChatSettings, value: string | number) => {
     const newSettings = {
       ...localSettings,
-      [key]: typeof value === 'string' ? value : Number(value),
+      [key]: Number(value),
     };
     setLocalSettings(newSettings);
     onSettingsChange(newSettings);
@@ -62,7 +62,7 @@ export const SettingsPanel = ({
             <h3>Параметры генерации</h3>
             
             <label className="settings-label">
-              <span>Temperature: {localSettings.temperature.toFixed(2)}</span>
+              <span>Temperature: {localSettings.temperature.toFixed(1)}</span>
               <input
                 type="range"
                 min="0"
@@ -90,7 +90,7 @@ export const SettingsPanel = ({
             </label>
 
             <label className="settings-label">
-              <span>Top P: {localSettings.topP.toFixed(2)}</span>
+              <span>Top P: {localSettings.topP.toFixed(1)}</span>
               <input
                 type="range"
                 min="0"
@@ -118,7 +118,7 @@ export const SettingsPanel = ({
             </label>
 
             <label className="settings-label">
-              <span>Frequency Penalty: {localSettings.frequencyPenalty.toFixed(2)}</span>
+              <span>Frequency Penalty: {localSettings.frequencyPenalty.toFixed(1)}</span>
               <input
                 type="range"
                 min="-2"
@@ -132,7 +132,7 @@ export const SettingsPanel = ({
             </label>
 
             <label className="settings-label">
-              <span>Presence Penalty: {localSettings.presencePenalty.toFixed(2)}</span>
+              <span>Presence Penalty: {localSettings.presencePenalty.toFixed(1)}</span>
               <input
                 type="range"
                 min="-2"
